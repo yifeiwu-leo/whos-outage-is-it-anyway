@@ -14,7 +14,10 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Who's Outage Is It Anyway?",
-  description: "Operational status dashboard for our dependencies",
+  description: "3rd Party Providers Status Dashboard",
+  icons: {
+    icon: '/favicon.ico',
+  },
 };
 
 export default function RootLayout({

@@ -1,5 +1,5 @@
 export type StatusSeverity = 'none' | 'minor' | 'major' | 'maintenance';
-export type ProviderType = 'rss' | 'modelstatus_api';
+export type ProviderType = 'rss' | 'modelstatus_api' | 'cloudflare_api';
 
 export interface StatusIncident {
   title: string;
@@ -26,4 +26,5 @@ export interface StatusProvider {
   apiProviderId?: string; // For modelstatus_api, the provider slug (e.g., 'kling')
   homePageUrl?: string;
   keywords?: string[]; // Optional keywords to filter incidents
+  componentId?: string; // For cloudflare_api to identify specific component
 }

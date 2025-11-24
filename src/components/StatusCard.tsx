@@ -34,7 +34,7 @@ export function StatusCard({ service }: { service: ServiceStatus }) {
       <StatusIndicator severity={service.currentStatus} />
       
       <div className="p-6 flex-grow">
-        <div className="flex items-center justify-between mb-6">
+        <div className={`flex items-center justify-between ${recentIncidents.length > 0 ? 'mb-6' : ''}`}>
           <h2 className={`text-xl font-bold leading-tight ${textColors[service.currentStatus]}`}>
             {service.serviceName}
           </h2>
@@ -74,11 +74,6 @@ export function StatusCard({ service }: { service: ServiceStatus }) {
              </div>
           )}
           
-          {recentIncidents.length === 0 && (
-              <div className="empty-state">
-                  No incidents in last 24h
-              </div>
-          )}
         </div>
       </div>
       

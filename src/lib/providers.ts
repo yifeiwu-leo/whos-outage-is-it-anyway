@@ -64,4 +64,20 @@ export const PROVIDERS: StatusProvider[] = [
     apiProviderId: 'bytedance',
     homePageUrl: 'https://www.modelstatus.ai/',
   },
+  {
+    id: 'cloudflare-ai-workers',
+    name: 'Cloudflare AI Workers',
+    url: 'https://www.cloudflarestatus.com/api/v2/components.json',
+    type: 'cloudflare_api',
+    componentId: 'zvm7mqn92xzc',
+    homePageUrl: 'https://www.cloudflarestatus.com/',
+  },
+  {
+    id: 'cloudflare-workers',
+    name: 'Cloudflare Workers',
+    url: 'https://www.cloudflarestatus.com/api/v2/components.json',
+    type: 'cloudflare_api',
+    componentId: '57srcl8zcn7c',
+    homePageUrl: 'https://www.cloudflarestatus.com/',
+  },
 ];

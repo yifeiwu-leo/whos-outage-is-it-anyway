@@ -9,7 +9,7 @@ const StatusIndicator = ({ severity }: { severity: StatusSeverity }) => {
     maintenance: 'bg-blue-500',
   };
   return (
-    <div className={`h-1 w-full ${colors[severity]} absolute top-0 left-0 right-0 rounded-t-lg`} />
+    <div className={`status-indicator-bar ${colors[severity]}`} />
   );
 }
 
@@ -23,14 +23,14 @@ export function StatusCard({ service }: { service: ServiceStatus }) {
   });
 
   const textColors = {
-    none: 'text-green-600',
-    minor: 'text-yellow-600',
-    major: 'text-red-600',
-    maintenance: 'text-blue-600',
+    none: 'text-green-400',
+    minor: 'text-yellow-400',
+    major: 'text-red-400',
+    maintenance: 'text-blue-400',
   };
 
   return (
-    <div className="group relative border border-gray-200 rounded-xl bg-white hover:border-gray-300 transition-colors duration-200 overflow-hidden flex flex-col">
+    <div className="status-card">
       <StatusIndicator severity={service.currentStatus} />
       
       <div className="p-6 flex-grow">
@@ -40,30 +40,30 @@ export function StatusCard({ service }: { service: ServiceStatus }) {
           </h2>
         </div>
 
-        <div className="space-y-4">
+        <div className="flex flex-col gap-4">
           {recentIncidents.length > 0 && (
              <div className="mt-4">
-               <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
+               <h3 className="text-xs font-semibold text-neutral-500 uppercase tracking-wider mb-3">
                  Recent Activity (24h)
                </h3>
                <ul className="space-y-2">
                 {recentIncidents.slice(0, 3).map((incident) => (
-                  <li key={incident.guid} className="relative pb-3 border-b border-gray-100 last:border-0 last:pb-0 transition-colors">
+                  <li key={incident.guid} className="status-list-item">
                     <div className="flex justify-between items-start gap-2">
-                      <a href={incident.link} target="_blank" rel="noopener noreferrer" className="text-sm font-medium text-gray-900 line-clamp-1 hover:text-blue-600 transition-colors">
+                      <a href={incident.link} target="_blank" rel="noopener noreferrer" className="incident-link">
                         {incident.title}
                       </a>
                     </div>
                     <div className="flex items-center gap-2 mt-1">
-                         <span className="text-[10px] text-gray-400 font-medium uppercase tracking-wide">
+                         <span className="text-xs text-neutral-500 font-medium uppercase tracking-wide">
                            {new Date(incident.pubDate).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
                         </span>
                         {/* Status badge if available for incident */}
                         {incident.status && incident.status !== 'none' && (
-                            <span className={`text-[10px] px-1.5 rounded-full capitalize
-                                ${incident.status === 'major' ? 'bg-red-100 text-red-700' : 
-                                  incident.status === 'minor' ? 'bg-yellow-100 text-yellow-700' : 
-                                  incident.status === 'maintenance' ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-600'}`}>
+                            <span className={`status-badge
+                                ${incident.status === 'major' ? 'badge-major' : 
+                                  incident.status === 'minor' ? 'badge-minor' : 
+                                  incident.status === 'maintenance' ? 'badge-maintenance' : 'badge-none'}`}>
                                 {incident.status}
                             </span>
                         )}
@@ -75,17 +75,17 @@ export function StatusCard({ service }: { service: ServiceStatus }) {
           )}
           
           {recentIncidents.length === 0 && (
-              <div className="h-full flex items-center justify-center min-h-[80px] text-sm text-gray-400 bg-gray-50/50 rounded-lg border border-dashed border-gray-200">
+              <div className="empty-state">
                   No incidents in last 24h
               </div>
           )}
         </div>
       </div>
       
-      <div className="bg-gray-50 px-6 py-3 border-t border-gray-100 flex justify-between items-center text-xs text-gray-500">
+      <div className="card-footer">
           <span>Updated {new Date(service.lastUpdated).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
-          <a href={service.serviceUrl} target="_blank" rel="noopener noreferrer" className="flex items-center hover:text-gray-900 transition-colors font-medium">
-              History <ChevronRight className="w-3 h-3 ml-0.5" />
+          <a href={service.serviceUrl} target="_blank" rel="noopener noreferrer" className="history-link">
+              History <ChevronRight className="w-3 h-3 ml-2" />
           </a>
       </div>
     </div>

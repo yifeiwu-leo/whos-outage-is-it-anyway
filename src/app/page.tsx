@@ -12,15 +12,15 @@ export default async function Home() {
   );
 
   return (
-    <main className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <main className="py-12">
       <AutoRefresh intervalMs={60000} />
-      <div className="max-w-7xl mx-auto">
+      <div className="container">
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2 tracking-tight">
+          <h1 className="mb-2">
             Who&apos;s Outage Is It Anyway?
           </h1>
-          <p className="text-lg text-gray-600">
-            Operational status dashboard for our dependencies.
+          <p className="text-lg text-neutral-400">
+            Operational status dashboard 3rd Party Providers
           </p>
         </div>
 
@@ -32,7 +32,7 @@ export default async function Home() {
           ))}
         </div>
 
-        <div className="mt-12 text-center text-sm text-gray-500">
+        <div className="mt-12 text-center text-sm text-neutral-500">
           <p>
             Auto-refreshes every 60 seconds. Data sourced from public status pages.
           </p>

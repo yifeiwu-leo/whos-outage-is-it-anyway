@@ -37,8 +37,13 @@ const SeverityBadge = ({ severity }: { severity: StatusSeverity }) => {
 };
 
 export function StatusCard({ service }: { service: ServiceStatus }) {
-  // Get the 3 most recent incidents
-  const recentIncidents = service.incidents.slice(0, 3);
+  // Filter incidents to only show those from the last 24 hours
+  const recentIncidents = service.incidents.filter(incident => {
+    const incidentDate = new Date(incident.pubDate);
+    const now = new Date();
+    const hoursSinceUpdate = (now.getTime() - incidentDate.getTime()) / (1000 * 60 * 60);
+    return hoursSinceUpdate < 24;
+  });
 
   return (
     <div className="border rounded-lg shadow-sm p-6 bg-white">

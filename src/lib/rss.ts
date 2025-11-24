@@ -67,30 +67,37 @@ export async function fetchServiceStatus(provider: StatusProvider): Promise<Serv
     
     if (incidents.length > 0) {
       const latestIncident = incidents[0];
-      const desc = latestIncident.description;
-      
-      // Try to find status from the structured description (HTML)
-      // Look for the FIRST occurrence of status keywords in bold/strong tags
-      // This assumes the latest update is at the top
-      const statusMatch = desc.match(/<strong>(Resolved|Monitoring|Investigating|Identified|Completed|Scheduled|In progress)<\/strong>/i);
-         
-      if (statusMatch) {
-        const statusText = statusMatch[1].toLowerCase();
-        if (statusText === 'resolved' || statusText === 'completed') {
-          currentStatus = 'none';
-        } else if (statusText === 'monitoring' || statusText === 'investigating' || statusText === 'identified' || statusText === 'in progress') {
-          currentStatus = 'minor';
-        } else if (statusText === 'scheduled') {
-          currentStatus = 'maintenance';
-        }
-      } else {
-        // Fallback: Use the status calculated for the incident
-        // But if the incident status is 'minor'/'major' because of history, this might be wrong.
-        // If the title says "Resolved", trust the title.
-        if (latestIncident.title.toLowerCase().includes('resolved')) {
-          currentStatus = 'none';
+      const incidentDate = new Date(latestIncident.pubDate);
+      const now = new Date();
+      const hoursSinceUpdate = (now.getTime() - incidentDate.getTime()) / (1000 * 60 * 60);
+
+      // Only consider incidents from the last 24 hours
+      if (hoursSinceUpdate < 24) {
+        const desc = latestIncident.description;
+        
+        // Try to find status from the structured description (HTML)
+        // Look for the FIRST occurrence of status keywords in bold/strong tags
+        // This assumes the latest update is at the top
+        const statusMatch = desc.match(/<strong>(Resolved|Monitoring|Investigating|Identified|Completed|Scheduled|In progress)<\/strong>/i);
+           
+        if (statusMatch) {
+          const statusText = statusMatch[1].toLowerCase();
+          if (statusText === 'resolved' || statusText === 'completed') {
+            currentStatus = 'none';
+          } else if (statusText === 'monitoring' || statusText === 'investigating' || statusText === 'identified' || statusText === 'in progress') {
+            currentStatus = 'minor';
+          } else if (statusText === 'scheduled') {
+            currentStatus = 'maintenance';
+          }
         } else {
-          currentStatus = latestIncident.status || 'none';
+          // Fallback: Use the status calculated for the incident
+          // But if the incident status is 'minor'/'major' because of history, this might be wrong.
+          // If the title says "Resolved", trust the title.
+          if (latestIncident.title.toLowerCase().includes('resolved')) {
+            currentStatus = 'none';
+          } else {
+            currentStatus = latestIncident.status || 'none';
+          }
         }
       }
     }

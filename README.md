@@ -1,3 +1,41 @@
+# Who's Outage Is It Anyway
+
+A tiny status dashboard intended for Vercel, starting with the Black Forest Labs status feed.
+
+Currently it reads incidents from:
+
+- https://status.bfl.ml/history.rss
+
+You can extend it later by pulling in more providers and merging their incident feeds.
+
+## Getting started
+
+From the project root:
+
+```bash
+npm install
+npm run dev
+```
+
+Then open `http://localhost:3000` in your browser.
+
+The home page:
+
+- Fetches the RSS feed from `https://status.bfl.ml/history.rss` on the server
+- Parses it with `fast-xml-parser`
+- Displays a simple list of recent incidents with timestamps and links to details
+
+## Deploying to Vercel
+
+1. Push this repository to GitHub, GitLab, or Bitbucket.
+2. In the Vercel dashboard, create a new project and import this repo.
+3. Vercel should auto-detect this as a Next.js app; the default build command and output are fine:
+   - **Build command**: `npm run build`
+   - **Output**: `.next`
+4. Deploy.
+
+No environment variables are required for the initial version.
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started

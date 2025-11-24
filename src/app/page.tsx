@@ -1,7 +1,8 @@
 import { PROVIDERS } from "@/lib/providers";
-import { fetchServiceStatus } from "@/lib/rss";
+import { fetchServiceStatus } from "@/lib/status-fetcher";
 import { StatusCard } from "@/components/StatusCard";
 import { AutoRefresh } from "@/components/AutoRefresh";
+import { StatusSummary } from "@/components/StatusSummary";
 
 export const revalidate = 60; // Revalidate every 60 seconds
 
@@ -15,13 +16,15 @@ export default async function Home() {
       <AutoRefresh intervalMs={60000} />
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">
+          <h1 className="text-4xl font-bold text-gray-900 mb-2 tracking-tight">
             Who&apos;s Outage Is It Anyway?
           </h1>
           <p className="text-lg text-gray-600">
             Operational status dashboard for our dependencies.
           </p>
         </div>
+
+        <StatusSummary statuses={statuses} />
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {statuses.map((status) => (

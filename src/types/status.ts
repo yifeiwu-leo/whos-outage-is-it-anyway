@@ -1,4 +1,5 @@
 export type StatusSeverity = 'none' | 'minor' | 'major' | 'maintenance';
+export type ProviderType = 'rss' | 'modelstatus_api';
 
 export interface StatusIncident {
   title: string;
@@ -20,7 +21,9 @@ export interface ServiceStatus {
 export interface StatusProvider {
   id: string;
   name: string;
-  url: string; // The RSS feed URL
+  url: string; // The RSS feed URL or API base URL
+  type?: ProviderType; // Defaults to 'rss' if undefined
+  apiProviderId?: string; // For modelstatus_api, the provider slug (e.g., 'kling')
   homePageUrl?: string;
+  keywords?: string[]; // Optional keywords to filter incidents
 }
-

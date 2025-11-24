@@ -48,7 +48,7 @@ export async function fetchServiceStatus(provider: StatusProvider): Promise<Serv
   try {
     const feed = await parser.parseURL(provider.url);
     
-    const incidents: StatusIncident[] = feed.items.map((item) => {
+    const allIncidents: StatusIncident[] = feed.items.map((item) => {
       // Simple severity extraction from title and start of description
       const contentToCheck = `${item.title} ${item.contentSnippet || item.content || ''}`;
       const status = determineSeverity(contentToCheck);
@@ -61,6 +61,13 @@ export async function fetchServiceStatus(provider: StatusProvider): Promise<Serv
         guid: item.guid || item.link || Math.random().toString(),
         status,
       };
+    });
+
+    // Filter incidents by keywords if provided
+    const incidents = allIncidents.filter((incident) => {
+      if (!provider.keywords || provider.keywords.length === 0) return true;
+      const textToCheck = `${incident.title} ${incident.description}`.toLowerCase();
+      return provider.keywords.some((keyword) => textToCheck.includes(keyword.toLowerCase()));
     });
 
     let currentStatus: StatusSeverity = 'none';

@@ -1,5 +1,4 @@
 export type StatusSeverity = 'none' | 'minor' | 'major' | 'maintenance';
-export type ProviderType = 'rss' | 'modelstatus_api' | 'cloudflare_api';
 
 export interface StatusIncident {
   title: string;
@@ -7,7 +6,7 @@ export interface StatusIncident {
   link: string;
   pubDate: string;
   guid: string;
-  status?: StatusSeverity; // Derived from description or title if possible
+  status?: StatusSeverity;
 }
 
 export interface ServiceStatus {
@@ -15,16 +14,10 @@ export interface ServiceStatus {
   serviceUrl: string;
   lastUpdated: string;
   incidents: StatusIncident[];
-  currentStatus: StatusSeverity; // Overall status
+  currentStatus: StatusSeverity;
 }
 
-export interface StatusProvider {
+export interface ProviderDefinition {
   id: string;
-  name: string;
-  url: string; // The RSS feed URL or API base URL
-  type?: ProviderType; // Defaults to 'rss' if undefined
-  apiProviderId?: string; // For modelstatus_api, the provider slug (e.g., 'kling')
-  homePageUrl?: string;
-  keywords?: string[]; // Optional keywords to filter incidents
-  componentId?: string; // For cloudflare_api to identify specific component
+  fetchStatus: () => Promise<ServiceStatus>;
 }

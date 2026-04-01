@@ -1,36 +1,105 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Who's Outage Is It Anyway?
+
+A real-time status dashboard for third-party AI and infrastructure providers. Aggregates public status pages and APIs into a single view, auto-refreshing every 60 seconds.
 
 ## Getting Started
 
-First, run the development server:
-
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) to view the dashboard.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Adding a New Provider
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Providers live under `src/providers/`, organised by their source type. Each provider is a small file that defines its config and delegates fetching to its mapper.
 
-## Learn More
+### RSS feed provider
 
-To learn more about Next.js, take a look at the following resources:
+Most status pages expose an RSS or Atom feed. Create a file under `src/providers/rss/`:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```ts
+// src/providers/rss/acme.ts
+import { ProviderDefinition } from '@/types/status';
+import { fetchRssStatus } from './mapper';
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+const config = {
+  id: 'acme',
+  name: 'Acme',
+  url: 'https://status.acme.com/feed.rss',
+  homePageUrl: 'https://status.acme.com/',
+  // keywords: ['Specific Component'],  // optional — filters incidents by keyword
+};
 
-## Deploy on Vercel
+export const acme: ProviderDefinition = {
+  id: config.id,
+  fetchStatus: () => fetchRssStatus(config),
+};
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### ModelStatus API provider
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+For providers tracked by [modelstatus.ai](https://modelstatus.ai), create a file under `src/providers/modelstatus/`:
+
+```ts
+// src/providers/modelstatus/acme.ts
+import { ProviderDefinition } from '@/types/status';
+import { fetchModelStatus } from './mapper';
+
+const config = {
+  id: 'acme',
+  name: 'Acme',
+  apiBaseUrl: 'https://modelstatus.ai',
+  apiProviderId: 'acme',           // the provider slug on modelstatus.ai
+  homePageUrl: 'https://acme.com/',
+};
+
+export const acme: ProviderDefinition = {
+  id: config.id,
+  fetchStatus: () => fetchModelStatus(config),
+};
+```
+
+### Custom API provider
+
+For providers with their own API (e.g. a Cloudflare-style JSON endpoint), create a mapper under a new subfolder and follow the same pattern — the mapper handles fetching and maps the response to `ServiceStatus`, and the provider file wires it up.
+
+### Registering the provider
+
+After creating the file, add it to `src/providers/index.ts`:
+
+```ts
+import { acme } from './rss/acme';   // or modelstatus/acme, etc.
+
+export const PROVIDERS = [
+  // ...existing providers...
+  acme,
+];
+```
+
+That's it — the dashboard picks it up automatically.
+
+## Project Structure
+
+```
+src/
+  providers/
+    index.ts              # all providers registered here
+    rss/
+      mapper.ts           # shared RSS fetch + severity logic
+      bfl.ts, fal.ts ...  # one file per provider
+    modelstatus/
+      mapper.ts           # ModelStatus API fetch + mapping
+      kling.ts, ...
+    cloudflare/
+      mapper.ts           # Cloudflare API fetch + mapping
+      cloudflare.ts
+  components/
+    StatusCard.tsx
+    StatusSummary.tsx
+    AutoRefresh.tsx
+  types/
+    status.ts             # ServiceStatus, StatusIncident, ProviderDefinition
+  app/
+    page.tsx
+```

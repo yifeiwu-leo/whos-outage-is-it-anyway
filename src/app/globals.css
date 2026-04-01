@@ -132,6 +132,7 @@ ul {
   padding-left: 1.5rem;
 }
 
+.text-2xl { font-size: 1.5rem; }
 .text-xl { font-size: 1.25rem; }
 .text-lg { font-size: 1.125rem; }
 .text-sm { font-size: 0.875rem; }
@@ -153,6 +154,7 @@ ul {
 .text-yellow-400 { color: var(--yellow-400); }
 .text-red-400 { color: var(--red-400); }
 .text-blue-400 { color: var(--blue-400); }
+.text-green-soft { color: var(--text-green-soft); }
 
 /* Grid System */
 .grid {
